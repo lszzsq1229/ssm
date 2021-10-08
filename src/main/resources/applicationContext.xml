@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/cache" xmlns:context="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+         https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--    spring配置文件,数据源,事务管理,与mybatis整合-->
+
+    <!--    数据源，事务控制-->
+
+
+         <bean id="druidDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/ssm?serverTimezone=UTC"/>
+        <property name="username" value="root"/>
+        <property name="password" value="localhost"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="druidDataSource"/>
+    </bean>
+
+
+    <!--    配置和mybatis的整合-->
+    <bean  id="SqlSessionFactory"   class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="druidDataSource"/>
+        <!--           指定mybatis全局配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--           指定mapper文件位置-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!--    配置扫描器，将mybatis接口的实现加入到ioc容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--      扫描所有的dao接口的实现，加入到ioc容器中-->
+        <property name="basePackage" value="com.gxuwz.crud.dao"/>
+    </bean>
+
+
+
+    <!--&#45;&#45;     1.开启基于注解的事务，2.xml配置形式（首选）&ndash;&gt;
+          <aop:config>
+    &lt;!&ndash;          切入点表达式&ndash;&gt;
+              <aop:pointcut id="txPoint" expression="execution(*com.gxuwz.crud.service..*(..))"/>
+    &lt;!&ndash;          增强事务配置&ndash;&gt;
+              <aop:advisor advice-ref="txAdvice"  pointcut-ref="txPoint"/>
+          </aop:config>
+    &lt;!&ndash;    配置增强事务，事务如何切入&ndash;&gt;
+        <tx:advice id="txAdvice">
+            <tx:attributes>
+                <tx:method name="*"/>
+                <tx:method name="get*"/>
+            </tx:attributes>
+        </tx:advice>-->
+
+    <!--    配置一个可以批量操作的sqlseesion-->
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="SqlSessionFactory"> </constructor-arg>
+        <constructor-arg name="executorType" value="BATCH" > </constructor-arg>
+    </bean>
+
+
+
+
+</beans>

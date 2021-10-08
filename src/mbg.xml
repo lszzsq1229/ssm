@@ -1,0 +1,37 @@
+ <!DOCTYPE generatorConfiguration PUBLIC
+"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+ <generatorConfiguration>
+    <context id="a">
+
+<!--        生成的代码无注解-->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <jdbcConnection
+                driverClass="com.mysql.cj.jdbc.Driver"
+                connectionURL="jdbc:mysql://localhost:3306/ssm?serverTimezone=UTC"
+                userId="root"
+                password="localhost">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+<!--        指定javabean生成的位置-->
+        <javaModelGenerator
+                targetPackage="com.gxuwz.crud.bean"
+                targetProject="./src/main/java">
+        <property name="enableSubPackages" value="true"/>
+        <property name="trimString" value="true"/>
+        </javaModelGenerator>
+<!--   sql映射文件生成的位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
+<!--        指定dao生成，mapper接口位置-->
+        <javaClientGenerator  type="XMLMAPPER"
+                targetPackage="com.gxuwz.crud.dao" targetProject="src/main/java"/>
+        <table tableName="emp" domainObjectName="Employee"></table>
+        <table tableName="dept" domainObjectName="Department"></table>
+    </context>
+</generatorConfiguration>
